@@ -1,7 +1,19 @@
 import { createElement, useCallback } from "react";
 import { TagCloud } from "react-tagcloud";
 
-export function Cloud({ tagList, uniqueId, caption, value, onClickAction, clickedTagId, minSize, maxSize }) {
+export function Cloud({
+    tagList,
+    uniqueId,
+    caption,
+    value,
+    onClickAction,
+    clickedTagId,
+    minSize,
+    maxSize,
+    shuffle,
+    disableRandomColor,
+    randomSeed
+}) {
     if (tagList.status === "loading") {
         return <div>Loading...</div>;
     }
@@ -33,5 +45,15 @@ export function Cloud({ tagList, uniqueId, caption, value, onClickAction, clicke
         [onClickAction, clickedTagId]
     );
 
-    return <TagCloud minSize={minSize} maxSize={maxSize} tags={data} onClick={tag => clickAction(tag.id)} />;
+    return (
+        <TagCloud
+            minSize={minSize}
+            maxSize={maxSize}
+            tags={data}
+            shuffle={shuffle}
+            onClick={tag => clickAction(tag.id)}
+            disableRandomColor={disableRandomColor}
+            randomSeed={randomSeed}
+        />
+    );
 }
