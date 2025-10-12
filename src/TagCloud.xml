@@ -21,8 +21,11 @@
                 <description>Data source providing Tag objects</description>
             </property>
             <property key="uniqueId" type="attribute" dataSource="tagList">
-                <caption>Unique ID</caption>
-                <description>Unique ID</description>
+                <caption>Tag Key</caption>
+                <description>
+                    Tag element key. If it is not provided, value property will be used instead (however it can fail if
+                    you don't have unique tag values. It is highly recommeded to use key property).
+                </description>
                 <attributeTypes>
                     <attributeType name="String" />
                 </attributeTypes>
@@ -43,13 +46,22 @@
                     <attributeType name="Long" />
                 </attributeTypes>
             </property>
+            <property key="color" type="attribute" dataSource="tagList">
+                <caption>Color</caption>
+                <description>
+                    Represents color of the tag. If it is not provided, random color will be used instead.
+                </description>
+                <attributeTypes>
+                    <attributeType name="String" />
+                </attributeTypes>
+            </property>
             <!-- Action property -->
             <property key="onClickAction" type="action">
                 <caption>On Click</caption>
                 <description>Action to be executed when a tag is clicked.</description>
             </property>
-            <property key="clickedTagId" type="attribute" required="false">
-                <caption>Tag Unique Id</caption>
+            <property key="clickedTagKey" type="attribute" required="false">
+                <caption>Tag Key</caption>
                 <description>To be sent to the (On Click) action.</description>
                 <attributeTypes>
                     <attributeType name="String" />
