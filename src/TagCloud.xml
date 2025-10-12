@@ -58,11 +58,24 @@
             <!-- Size property -->
             <property key="minSize" type="integer" defaultValue="12">
                 <caption>Minimum Size</caption>
-                <description>The minimum font size for tags</description>
+                <description>Minimal font size (in px) used in cloud.</description>
             </property>
             <property key="maxSize" type="integer" defaultValue="35">
                 <caption>Maximum Size</caption>
-                <description>The maximum font size for tags</description>
+                <description>Maximal font size (in px) used in cloud.</description>
+            </property>
+            <!-- (...) -->
+            <property key="shuffle" type="boolean" defaultValue="true">
+                <caption>Shuffle</caption>
+                <description>If true, tags are shuffled. When tags are modified, cloud is re-shuffled.</description>
+            </property>
+            <property key="disableRandomColor" type="boolean" defaultValue="false">
+                <caption>Disable Random Color</caption>
+                <description>If true, random color is not used.</description>
+            </property>
+            <property key="randomSeed" type="integer">
+                <caption>Random Seed</caption>
+                <description>Random seed used to shuffle tags and generate color.</description>
             </property>
         </propertyGroup>
     </properties>
