@@ -8,6 +8,7 @@ export function TagCloud({
     uniqueId,
     caption,
     value,
+    color,
     onClickAction,
     clickedTagId,
     minSize,
@@ -22,6 +23,7 @@ export function TagCloud({
             uniqueId={uniqueId}
             caption={caption}
             value={value}
+            color={color}
             onClickAction={onClickAction}
             clickedTagId={clickedTagId}
             minSize={minSize}

@@ -6,6 +6,7 @@ export function Cloud({
     uniqueId,
     caption,
     value,
+    color,
     onClickAction,
     clickedTagId,
     minSize,
@@ -21,7 +22,8 @@ export function Cloud({
     const data = tagList.items.map(tag => ({
         value: caption.get(tag).value,
         count: value.get(tag).value,
-        id: uniqueId.get(tag).value
+        id: uniqueId.get(tag).value,
+        color: color.get(tag).value
     }));
 
     const clickAction = useCallback(
