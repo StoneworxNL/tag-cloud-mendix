@@ -8,6 +8,7 @@ export function Cloud({
     value,
     color,
     onClickAction,
+    onDoubleClickAction,
     clickedTagId,
     minSize,
     maxSize,
@@ -38,25 +39,20 @@ export function Cloud({
         return item;
     });
 
-    const clickAction = useCallback(
-        tagKey => {
-            if (!onClickAction) return;
-
-            if (onClickAction.isExecuting || !onClickAction.canExecute) {
-                console.warn("onClickAction cannot be executed.");
+    const handleTagAction = useCallback(
+        (tagKey, action) => {
+            if (!action || action.isExecuting || !action.canExecute) {
+                console.warn("Action cannot be executed.");
                 return;
             }
 
-            if (clickedTagId) {
-                if (clickedTagId.status !== "available") {
-                    console.warn("countryClickedISO is not available.");
-                    return;
-                } else clickedTagId.setValue(tagKey);
+            if (clickedTagId?.status === "available") {
+                clickedTagId.setValue(tagKey);
             }
 
-            onClickAction.execute();
+            action.execute();
         },
-        [onClickAction]
+        [clickedTagId]
     );
 
     return (
@@ -65,7 +61,8 @@ export function Cloud({
             maxSize={maxSize}
             tags={data}
             shuffle={shuffle}
-            onClick={tag => clickAction(tag.key)}
+            onClick={tag => handleTagAction(tag.key, onClickAction)}
+            onDoubleClick={tag => handleTagAction(tag.key, onDoubleClickAction)}
             disableRandomColor={disableRandomColor}
             randomSeed={randomSeed}
         />
