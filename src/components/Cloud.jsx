@@ -19,15 +19,27 @@ export function Cloud({
         return <div>Loading...</div>;
     }
 
-    const data = tagList.items.map(tag => ({
-        value: caption.get(tag).value,
-        count: value.get(tag).value,
-        id: uniqueId.get(tag).value,
-        color: color.get(tag).value
-    }));
+    const data = tagList.items.map(tag => {
+        const item = {
+            value: caption.get(tag).value,
+            count: value.get(tag).value
+        };
+
+        const tagKey = uniqueId?.get(tag).value;
+        if (tagKey) {
+            item.key = tagKey;
+        }
+
+        const tagColor = color?.get(tag).value;
+        if (tagColor) {
+            item.color = tagColor;
+        }
+
+        return item;
+    });
 
     const clickAction = useCallback(
-        tagId => {
+        tagKey => {
             if (!onClickAction) return;
 
             if (onClickAction.isExecuting || !onClickAction.canExecute) {
@@ -39,12 +51,12 @@ export function Cloud({
                 if (clickedTagId.status !== "available") {
                     console.warn("countryClickedISO is not available.");
                     return;
-                } else clickedTagId.setValue(tagId);
+                } else clickedTagId.setValue(tagKey);
             }
 
             onClickAction.execute();
         },
-        [onClickAction, clickedTagId]
+        [onClickAction]
     );
 
     return (
@@ -53,7 +65,7 @@ export function Cloud({
             maxSize={maxSize}
             tags={data}
             shuffle={shuffle}
-            onClick={tag => clickAction(tag.id)}
+            onClick={tag => clickAction(tag.key)}
             disableRandomColor={disableRandomColor}
             randomSeed={randomSeed}
         />

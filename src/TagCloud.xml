@@ -20,12 +20,9 @@
                 <caption>Tag List</caption>
                 <description>Data source providing Tag objects</description>
             </property>
-            <property key="uniqueId" type="attribute" dataSource="tagList">
-                <caption>Tag Key</caption>
-                <description>
-                    Tag element key. If it is not provided, value property will be used instead (however it can fail if
-                    you don't have unique tag values. It is highly recommeded to use key property).
-                </description>
+            <property key="uniqueId" type="attribute" dataSource="tagList" required="false">
+                <caption>Tag Key (Unique)</caption>
+                <description>If it is not provided, value property will be used instead.</description>
                 <attributeTypes>
                     <attributeType name="String" />
                 </attributeTypes>
@@ -46,11 +43,9 @@
                     <attributeType name="Long" />
                 </attributeTypes>
             </property>
-            <property key="color" type="attribute" dataSource="tagList">
+            <property key="color" type="attribute" dataSource="tagList" required="false">
                 <caption>Color</caption>
-                <description>
-                    Represents color of the tag. If it is not provided, random color will be used instead.
-                </description>
+                <description>Color of the tag. If not provided, random color will be used instead.</description>
                 <attributeTypes>
                     <attributeType name="String" />
                 </attributeTypes>
@@ -85,7 +80,7 @@
                 <caption>Disable Random Color</caption>
                 <description>If true, random color is not used.</description>
             </property>
-            <property key="randomSeed" type="integer">
+            <property key="randomSeed" type="integer" defaultValue="0">
                 <caption>Random Seed</caption>
                 <description>Random seed used to shuffle tags and generate color.</description>
             </property>
