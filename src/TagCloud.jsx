@@ -10,6 +10,7 @@ export function TagCloud({
     value,
     color,
     onClickAction,
+    onDoubleClickAction,
     clickedTagId,
     minSize,
     maxSize,
@@ -25,6 +26,7 @@ export function TagCloud({
             value={value}
             color={color}
             onClickAction={onClickAction}
+            onDoubleClickAction={onDoubleClickAction}
             clickedTagId={clickedTagId}
             minSize={minSize}
             maxSize={maxSize}

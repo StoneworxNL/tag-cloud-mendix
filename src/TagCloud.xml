@@ -51,17 +51,7 @@
                 </attributeTypes>
             </property>
             <!-- Action property -->
-            <property key="onClickAction" type="action">
-                <caption>On Click</caption>
-                <description>Action to be executed when a tag is clicked.</description>
-            </property>
-            <property key="clickedTagKey" type="attribute" required="false">
-                <caption>Tag Key</caption>
-                <description>To be sent to the (On Click) action.</description>
-                <attributeTypes>
-                    <attributeType name="String" />
-                </attributeTypes>
-            </property>
+
             <!-- Size property -->
             <property key="minSize" type="integer" defaultValue="12">
                 <caption>Minimum Size</caption>
@@ -83,6 +73,23 @@
             <property key="randomSeed" type="integer" defaultValue="0">
                 <caption>Random Seed</caption>
                 <description>Random seed used to shuffle tags and generate color.</description>
+            </property>
+        </propertyGroup>
+        <propertyGroup caption="Events">
+            <property key="onClickAction" type="action">
+                <caption>On Click</caption>
+                <description>Action to be executed when a tag is clicked.</description>
+            </property>
+            <property key="onDoubleClickAction" type="action">
+                <caption>On Double Click</caption>
+                <description>Action to be executed when a tag is double-clicked.</description>
+            </property>
+            <property key="clickedTagKey" type="attribute" required="false">
+                <caption>Tag Key</caption>
+                <description>To be sent to the (On Click) action.</description>
+                <attributeTypes>
+                    <attributeType name="String" />
+                </attributeTypes>
             </property>
         </propertyGroup>
     </properties>
