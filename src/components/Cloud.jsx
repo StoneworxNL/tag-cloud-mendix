@@ -9,7 +9,7 @@ export function Cloud({
     color,
     onClickAction,
     onDoubleClickAction,
-    clickedTagId,
+    clickedTagKey,
     minSize,
     maxSize,
     shuffle,
@@ -23,18 +23,11 @@ export function Cloud({
     const data = tagList.items.map(tag => {
         const item = {
             value: caption.get(tag).value,
-            count: value.get(tag).value
+            count: value.get(tag).value,
+            color: color?.get(tag).value
         };
 
-        const tagKey = uniqueId?.get(tag).value;
-        if (tagKey) {
-            item.key = tagKey;
-        }
-
-        const tagColor = color?.get(tag).value;
-        if (tagColor) {
-            item.color = tagColor;
-        }
+        item.key = uniqueId?.get(tag).value || item.value;
 
         return item;
     });
@@ -46,13 +39,13 @@ export function Cloud({
                 return;
             }
 
-            if (clickedTagId?.status === "available") {
-                clickedTagId.setValue(tagKey);
+            if (clickedTagKey?.status === "available") {
+                clickedTagKey.setValue(tagKey);
             }
 
             action.execute();
         },
-        [clickedTagId]
+        [clickedTagKey]
     );
 
     return (
