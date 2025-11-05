@@ -5,7 +5,7 @@ Simple and extensible tag/word cloud React component based on
 
 <img alt="Mendix Pluggable Widget Tag Cloud Logo" src="https://github.com/joaodelopes/tag-cloud-mendix/blob/main/src/TagCloud.icon.png" width="65px"/>
 
-![Demo](https://github.com/StoneworxNL/tag-cloud-mendix/blob/main/images/home.png)
+![Demo](https://github.com/joaodelopes/tag-cloud-mendix/blob/main/images/home.png)
 
 ## How To Use
 
