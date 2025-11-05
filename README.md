@@ -5,12 +5,12 @@ Simple and extensible tag/word cloud React component based on
 
 <img alt="Mendix Pluggable Widget Tag Cloud Logo" src="https://github.com/joaodelopes/tag-cloud-mendix/blob/main/src/TagCloud.icon.png" width="65px"/>
 
-![Demo](https://github.com/StoneworxNL/worldmap-mendix/blob/main/images/home.png)
+![Demo](https://github.com/StoneworxNL/tag-cloud-mendix/blob/main/images/home.png)
 
 ## How To Use
 
 1. Create a database entity to store the the Tag (Caption and Value and, optionally, Color as well).
-   ![Domain Model Example](https://github.com/joaodelopes/tag-cloud-mendix/blob/main/images/db.png)
+   <img alt="Domain Model Example" src="https://github.com/joaodelopes/tag-cloud-mendix/blob/main/images/db.png" width="550px"/>
 2. Drag and Drop the Tag Cloud widget from the Toolbox and fill in the required properties, namely, a List of Tags, an
    (optional) key, a Caption and Value, Min/Max size in px, among others.
    ![Configuration in Studio Pro (Data View)](https://github.com/joaodelopes/tag-cloud-mendix/blob/main/images/dataview.png)
