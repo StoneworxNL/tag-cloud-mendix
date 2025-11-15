@@ -24,10 +24,7 @@ Simple and extensible tag/word cloud React component based on
 
 If you want to handle clicks (or double click events) on the cloud tags:
 
-1. Wrap the Tag Cloud widget with a dataview.
-
-<img alt="Configuration in Studio Pro (General)" src="https://github.com/joaodelopes/tag-cloud-mendix/blob/main/images/generalconfig.png" width="450px"/>
-
+1. Wrap the Tag Cloud widget with a dataview. If none is provided, the value property is used.
 2. Having the dataview object in context, add its "key" attribute as the widget's "Tag Key".
 
 <img alt="Configuration in Studio Pro (Events)" src="https://github.com/joaodelopes/tag-cloud-mendix/blob/main/images/eventsconfig.png" width="450px"/>
