@@ -39,7 +39,7 @@ If you want to handle clicks (or double click events) on the cloud tags:
 4. Set that action as the widget's "On Click" or "On Double Click".
 
 <img alt="Configuration in Studio Pro (Events)" src="https://github.com/joaodelopes/tag-cloud-mendix/blob/main/images/eventsconfig.png" width="450px"/>
-s
+
 ## Demo project
 
 -   [Mendix app running on the cloud](https://tagcloud-sandbox.mxapps.io/index.html?profile=Responsive)
