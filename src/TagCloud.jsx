@@ -11,7 +11,7 @@ export function TagCloud({
     color,
     onClickAction,
     onDoubleClickAction,
-    clickedTagKey,
+    onMouseMoveAction,
     minSize,
     maxSize,
     shuffle,
@@ -27,7 +27,7 @@ export function TagCloud({
             color={color}
             onClickAction={onClickAction}
             onDoubleClickAction={onDoubleClickAction}
-            clickedTagKey={clickedTagKey}
+            onMouseMoveAction={onMouseMoveAction}
             minSize={minSize}
             maxSize={maxSize}
             shuffle={shuffle}
