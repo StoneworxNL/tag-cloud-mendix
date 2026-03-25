@@ -20,22 +20,9 @@ Simple and extensible tag/word cloud React component based on
 
 <img alt="Configuration in Studio Pro (General)" src="https://github.com/stoneworxNL/tag-cloud-mendix/blob/main/images/generalconfig.png" width="450px"/>
 
-## On Click
+## Events
 
-If you want to handle clicks (or double click events) on the cloud tags:
-
-1. Wrap the Tag Cloud widget with a dataview. If none is provided, the value property is used.
-2. Having the dataview object in context, add its "key" attribute as the widget's "Tag Key".
-
-<img alt="Configuration in Studio Pro (Events)" src="https://github.com/stoneworxNL/tag-cloud-mendix/blob/main/images/eventsconfig.png" width="450px"/>
-
-3. Create an action (nanoflow, microflow...) to handle the onClick/onDoubleClick event.
-
-<img alt="OnClick Microflow Example" src="https://github.com/stoneworxNL/tag-cloud-mendix/blob/main/images/mf.png" width="550px"/>
-
-4. Set that action as the widget's "On Click" or "On Double Click".
-
-<img alt="Configuration in Studio Pro (Events)" src="https://github.com/stoneworxNL/tag-cloud-mendix/blob/main/images/eventsconfig.png" width="450px"/>
+If you want to handle click, double-click or hover events, add the mendix action on the widget's configurations and optionally send as input to your action the $eventTagKey which contains the key of the tag clicked/double-clicked/hovered.
 
 ## Demo project
 
