@@ -79,17 +79,23 @@
             <property key="onClickAction" type="action">
                 <caption>On Click</caption>
                 <description>Action to be executed when a tag is clicked.</description>
+                <actionVariables>
+                    <actionVariable key="eventTagKey" type="String" caption="Tag Key" />
+                </actionVariables>
             </property>
             <property key="onDoubleClickAction" type="action">
                 <caption>On Double Click</caption>
                 <description>Action to be executed when a tag is double-clicked.</description>
+                <actionVariables>
+                    <actionVariable key="eventTagKey" type="String" caption="Tag Key" />
+                </actionVariables>
             </property>
-            <property key="clickedTagKey" type="attribute" required="false">
-                <caption>Tag Key</caption>
-                <description>To be sent to the (On Click) action.</description>
-                <attributeTypes>
-                    <attributeType name="String" />
-                </attributeTypes>
+            <property key="onMouseMoveAction" type="action">
+                <caption>On Mouse Move</caption>
+                <description>Action to be executed when mouse is moved over a tag.</description>
+                <actionVariables>
+                    <actionVariable key="eventTagKey" type="String" caption="Tag Key" />
+                </actionVariables>
             </property>
         </propertyGroup>
     </properties>

@@ -1,4 +1,4 @@
-import { createElement, useCallback } from "react";
+import { createElement, useCallback, useMemo } from "react";
 import { TagCloud } from "react-tagcloud";
 
 export function Cloud({
@@ -9,7 +9,7 @@ export function Cloud({
     color,
     onClickAction,
     onDoubleClickAction,
-    clickedTagKey,
+    onMouseMoveAction,
     minSize,
     maxSize,
     shuffle,
@@ -20,17 +20,21 @@ export function Cloud({
         return <div>Loading...</div>;
     }
 
-    const data = tagList.items.map(tag => {
-        const item = {
-            value: caption.get(tag).value,
-            count: value.get(tag).value,
-            color: color?.get(tag).value
-        };
+    const data = useMemo(() => {
+        if (!tagList.items) {
+            return [];
+        }
+        return tagList.items.map(tag => {
+            const item = {
+                value: caption.get(tag).value,
+                count: Number(value.get(tag).value),
+                color: color?.get(tag).value
+            };
 
-        item.key = uniqueId?.get(tag).value || item.value;
-
-        return item;
-    });
+            item.key = uniqueId?.get(tag).value || item.value;
+            return item;
+        });
+    }, [tagList, caption, value, color, uniqueId]);
 
     const handleTagAction = useCallback(
         (tagKey, action) => {
@@ -39,14 +43,14 @@ export function Cloud({
                 return;
             }
 
-            if (clickedTagKey?.status === "available") {
-                clickedTagKey.setValue(tagKey);
-            }
-
-            action.execute();
+            action.execute({ eventTagKey: tagKey });
         },
-        [clickedTagKey]
+        [onClickAction, onDoubleClickAction, onMouseMoveAction]
     );
+
+    if (data.length === 0) {
+        return <div>No tags available.</div>;
+    }
 
     return (
         <TagCloud
@@ -56,6 +60,7 @@ export function Cloud({
             shuffle={shuffle}
             onClick={tag => handleTagAction(tag.key, onClickAction)}
             onDoubleClick={tag => handleTagAction(tag.key, onDoubleClickAction)}
+            onMouseMove={tag => handleTagAction(tag.key, onMouseMoveAction)}
             disableRandomColor={disableRandomColor}
             randomSeed={randomSeed}
         />
