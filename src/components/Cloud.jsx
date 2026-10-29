@@ -1,4 +1,4 @@
-import { createElement, useCallback, useMemo, useRef } from "react";
+import { createElement, useCallback, useEffect, useMemo, useRef } from "react";
 import { TagCloud } from "react-tagcloud";
 import classNames from "classnames";
 
@@ -46,19 +46,27 @@ export function Cloud({
     // change. Everything else (color, tooltip, class, object) is looked up here at render time so edits show up.
     const metaByKey = useRef(new Map());
     const hoveredKey = useRef(null);
+    const pendingMouseOut = useRef(null);
 
     const data = useMemo(() => {
         const meta = new Map();
         const tags = (tagList.items ?? []).map(item => {
-            const text = caption.get(item).displayValue ?? "";
+            const captionValue = caption.get(item);
+            const text = captionValue.displayValue ?? "";
             const rawKey = uniqueId?.get(item).value;
-            let key = rawKey !== undefined && rawKey !== null && rawKey !== "" ? rawKey.toString() : text;
-            // Duplicate keys would make React drop tags; keep them visible and distinguishable.
+            // Without a Tag Key the caption's value is the key: for an Enum that is the enumeration key, which
+            // doesn't change with the user's language.
+            const eventKey = (
+                rawKey !== undefined && rawKey !== null && rawKey !== "" ? rawKey : captionValue.value ?? ""
+            ).toString();
+            // Duplicate keys would make React drop tags; the React key gets a suffix, actions still get eventKey.
+            let key = eventKey;
             for (let n = 2; meta.has(key); n++) {
-                key = `${key}#${n}`;
+                key = `${eventKey}#${n}`;
             }
             meta.set(key, {
                 item,
+                eventKey,
                 color: color?.get(item).value || undefined,
                 tooltip: tooltip?.get(item).value || undefined,
                 tagClass: tagClass?.get(item).value || undefined
@@ -84,16 +92,27 @@ export function Cloud({
         return options;
     }, [colorLuminosity, colorHue, customHue]);
 
-    const run = useCallback((action, tagKey) => {
-        if (canRun(action)) {
-            action.execute({ eventTagKey: tagKey });
+    // Runs an action for the tag with this React key. Returns whether it ran (it is skipped while still executing).
+    const run = useCallback((action, key) => {
+        if (!canRun(action)) {
+            return false;
         }
+        action.execute({ eventTagKey: metaByKey.current.get(key)?.eventKey ?? key });
+        return true;
     }, []);
 
+    // A mouse out that was skipped because the action was still busy runs as soon as it can, so a page that
+    // tracks hovering never keeps a tag marked as hovered.
+    useEffect(() => {
+        if (pendingMouseOut.current !== null && run(onMouseOutAction, pendingMouseOut.current)) {
+            pendingMouseOut.current = null;
+        }
+    }, [onMouseOutAction, run]);
+
     const handleClick = useCallback(
-        tagKey => {
-            run(onClickAction, tagKey);
-            const item = metaByKey.current.get(tagKey)?.item;
+        key => {
+            run(onClickAction, key);
+            const item = metaByKey.current.get(key)?.item;
             if (item && onClickItemAction) {
                 const itemAction = onClickItemAction.get(item);
                 if (canRun(itemAction)) {
@@ -151,9 +170,9 @@ export function Cloud({
     const onDoubleClick = onDoubleClickAction ? tag => run(onDoubleClickAction, tag.key) : undefined;
     const onMouseMove = onMouseMoveAction
         ? tag => {
-              if (hoveredKey.current !== tag.key) {
+              // Only remember the tag once the action ran, so a move while it is busy retries on the next move.
+              if (hoveredKey.current !== tag.key && run(onMouseMoveAction, tag.key)) {
                   hoveredKey.current = tag.key;
-                  run(onMouseMoveAction, tag.key);
               }
           }
         : undefined;
@@ -161,7 +180,10 @@ export function Cloud({
         onMouseMoveAction || onMouseOutAction
             ? tag => {
                   hoveredKey.current = null;
-                  run(onMouseOutAction, tag.key);
+                  if (onMouseOutAction) {
+                      const ran = run(onMouseOutAction, tag.key);
+                      pendingMouseOut.current = !ran && onMouseOutAction.isExecuting ? tag.key : null;
+                  }
               }
             : undefined;
 

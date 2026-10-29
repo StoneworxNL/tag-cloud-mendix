@@ -47,8 +47,18 @@ export function check(values) {
     if (values.maxSize < values.minSize) {
         errors.push({ property: "maxSize", message: "Maximum Size must be greater than or equal to Minimum Size." });
     }
-    if (values.colorHue === "custom" && !/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(values.customHue || "")) {
-        errors.push({ property: "customHue", message: "Custom Hue must be a hex color such as #E4572E." });
+    // The color options are hidden when random colors are off, so they can't be wrong then.
+    if (!values.disableRandomColor) {
+        if (values.colorHue === "custom" && !/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(values.customHue || "")) {
+            errors.push({ property: "customHue", message: "Custom Hue must be a hex color such as #E4572E." });
+        }
+        if (values.renderMode === "pill" && values.colorLuminosity !== "dark") {
+            errors.push({
+                property: "colorLuminosity",
+                severity: "warning",
+                message: "Pills have white text. Set Luminosity to Dark so random colors keep enough contrast."
+            });
+        }
     }
     return errors;
 }

@@ -1,45 +1,94 @@
 # Tag Cloud Mendix Pluggable Widget
 
-Simple and extensible tag/word cloud React component based on
-[https://www.npmjs.com/package/react-tagcloud](https://www.npmjs.com/package/react-tagcloud).
+<img alt="Tag Cloud widget logo" src="src/TagCloud.icon.png" width="65px"/>
 
-<img alt="Mendix Pluggable Widget Tag Cloud Logo" src="https://github.com/stoneworxNL/tag-cloud-mendix/blob/main/src/TagCloud.icon.png" width="65px"/>
+A tag/word cloud for Mendix, based on [react-tagcloud](https://www.npmjs.com/package/react-tagcloud). Each tag's font
+size follows its value, colors come from your data or a seeded generator, and tags can run actions.
 
-![Demo](https://github.com/stoneworxNL/tag-cloud-mendix/blob/main/images/home.png)
+![Demo](images/home.png)
 
-## How To Use
+## Requirements
 
-1. Create a database entity to store the the Tag (Caption and Value and, optionally, Color as well).
+-   Mendix 11 or newer (the widget is built with Pluggable Widgets Tools 11 and React 19).
+-   Web only.
 
-<img alt="Domain Model Example" src="https://github.com/stoneworxNL/tag-cloud-mendix/blob/main/images/db.png" width="300px"/>
+## How to use
 
-2. Drag and Drop the Tag Cloud widget from the Toolbox and fill in the required properties, namely, a List of Tags, an
-   (optional) key, a Caption and Value, Min/Max size in px, among others.
+1. Create an entity for the tags with a caption (String or Enum) and a value (Integer, Long or Decimal). Optionally add
+   a color (String, any CSS color) and a unique key.
 
-![Configuration in Studio Pro (Data View)](https://github.com/stoneworxNL/tag-cloud-mendix/blob/main/images/dataview.png)
+    <img alt="Domain model example" src="images/db.png" width="300px"/>
 
-<img alt="Configuration in Studio Pro (General)" src="https://github.com/stoneworxNL/tag-cloud-mendix/blob/main/images/generalconfig.png" width="450px"/>
+2. Drag the Tag Cloud widget onto a page and set Tag List to a data source of that entity, then pick the Caption and
+   Value attributes. The widget doesn't need a surrounding data view.
+
+    <img alt="Configuration in Studio Pro (General)" src="images/generalconfig.png" width="450px"/>
+
+## Properties
+
+### General
+
+| Property             | Description                                                                                                                     |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Tag List             | Any list data source (database with XPath, microflow, association, ...). Its sort order is the cloud's order when Shuffle is off. |
+| Tag Key (Unique)     | Optional String, Integer, Long, AutoNumber or Enum attribute passed to actions as `$eventTagKey`. Defaults to the caption's value (for an Enum, the enumeration key, not the translated caption). |
+| Caption              | Text of the tag (String or Enum).                                                                                               |
+| Value                | Weight of the tag. Empty values count as 0.                                                                                     |
+| Color                | Optional CSS color per tag. Tags without one get a generated color.                                                             |
+| Minimum/Maximum Size | Font size in px of the lowest and highest value; the rest is scaled in between.                                                |
+| Shuffle              | Mix the tags. Off keeps the data source order.                                                                                  |
+| Random Seed          | Makes shuffle and generated colors the same on every load. 0 means a different result each time.                               |
+
+### Appearance
+
+| Property             | Description                                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Tag Style            | Text (colored words) or Pill (chips with the tag color as background and white text).                       |
+| Tooltip              | Text template shown on hover, for example `{1}: {2} mentions`.                                               |
+| Tag Class            | Expression returning extra CSS classes per tag, for example `if $currentObject/Value > 100 then 'tag-hot' else ''`. |
+| Disable Random Color | Tags without a color use the page text color.                                                                |
+| Luminosity, Hue      | Steer the generated colors (bright, light, dark; red, blue, monochrome, ... or a custom hex hue). For pills use Dark. |
+| Empty Message        | Translatable text shown when the data source returns no tags.                                               |
+
+The widget's Class and Style properties apply to the whole cloud. Tags have the class `tag-cloud-tag` (and
+`tag-cloud-tag--pill` for pills); the cloud has `widget-tag-cloud`.
 
 ## Events
 
-If you want to handle click, double-click or hover events, add the mendix action on the widget's configurations and optionally send as input to your action the $eventTagKey which contains the key of the tag clicked/double-clicked/hovered.
+All tag key actions receive `$eventTagKey`: the Tag Key, or the caption's value when no key is set.
+
+| Action            | When it runs                                                                       |
+| ----------------- | ---------------------------------------------------------------------------------- |
+| On Click          | A tag is clicked, or focused with Tab and activated with Enter or Space.           |
+| On Double Click   | A tag is double-clicked. The browser fires On Click twice before this.             |
+| On Mouse Move     | Once each time the mouse enters a tag (not on every pixel, since 1.1.0).           |
+| On Mouse Out      | The mouse leaves a tag.                                                            |
+| On Click (object) | A tag is clicked; the action receives the tag object itself, e.g. to open a page. |
+
+Use nanoflows for On Mouse Move and On Mouse Out: a microflow is a server round trip each time. Because a double click
+also fires two clicks, don't wire On Click and On Double Click to microflows that both change data.
 
 ## Demo project
 
 -   [Mendix app running on the cloud](https://tagcloud-sandbox.mxapps.io/index.html?profile=Responsive)
--   [Mendix demo module (.mpk)](https://github.com/stoneworxNL/tag-cloud-mendix/blob/main/demo/CloudTag.mpk)
+-   [Mendix demo module (.mpk)](demo/CloudTag.mpk)
 
-You can check the demo [here](https://tagcloud-sandbox.mxapps.io/index.html?profile=Responsive). Please be mindful of
-changing the data, as to keep the demo working for every user.
+Please be mindful when changing the data in the online demo, so it keeps working for everyone.
 
-### Tags' Configuration Example
+![Demo](images/homegif.gif)
 
-![Countries Configuration](https://github.com/stoneworxNL/tag-cloud-mendix/blob/main/images/dataoverview.png)
+## Development
 
-### Demo
+```
+npm install
+npm test        # unit tests
+npm run lint
+npm run build   # builds and copies the .mpk into the Mendix app set in package.json (config.projectPath)
+npm run release # production .mpk in dist/<version>
+```
 
-![Demo](https://github.com/stoneworxNL/tag-cloud-mendix/blob/main/images/homegif.gif)
+Requires Node 20 or newer.
 
 ## Issues, suggestions and feature requests
 
-Let us know if you find any issues or if you have any feature requests.
+Let us know on [GitHub](https://github.com/StoneworxNL/tag-cloud-mendix/issues).
