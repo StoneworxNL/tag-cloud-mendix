@@ -156,21 +156,21 @@
                 </property>
                 <property key="onDoubleClickAction" type="action" required="false">
                     <caption>On Double Click</caption>
-                    <description>Action to be executed when a tag is double-clicked.</description>
+                    <description>Action to be executed when a tag is double-clicked. The browser also fires On Click twice first.</description>
                     <actionVariables>
                         <actionVariable key="eventTagKey" type="String" caption="Tag Key" />
                     </actionVariables>
                 </property>
                 <property key="onMouseMoveAction" type="action" required="false">
                     <caption>On Mouse Move</caption>
-                    <description>Action to be executed when the mouse moves onto a tag. Runs once per tag entered, not on every pixel.</description>
+                    <description>Action to be executed when the mouse moves onto a tag. Runs once per tag entered (like a mouse enter), not on every pixel. Use a nanoflow: a microflow is a server round trip each time.</description>
                     <actionVariables>
                         <actionVariable key="eventTagKey" type="String" caption="Tag Key" />
                     </actionVariables>
                 </property>
                 <property key="onMouseOutAction" type="action" required="false">
                     <caption>On Mouse Out</caption>
-                    <description>Action to be executed when the mouse leaves a tag.</description>
+                    <description>Action to be executed when the mouse leaves a tag. Use a nanoflow: a microflow is a server round trip each time.</description>
                     <actionVariables>
                         <actionVariable key="eventTagKey" type="String" caption="Tag Key" />
                     </actionVariables>

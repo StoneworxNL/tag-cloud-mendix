@@ -123,18 +123,54 @@ describe("Cloud", () => {
         expect(tag(container, "Lisbon").style.color).toBe("rgb(0, 0, 255)");
     });
 
-    it("keeps tags with duplicate captions", () => {
+    it("keeps tags with duplicate captions and passes the real key to actions", () => {
         const onClickAction = action();
         const { container } = renderCloud({
             onClickAction,
-            tagList: list([...ITEMS, { id: "5", caption: "Porto", value: 3 }])
+            tagList: list([...ITEMS, { id: "5", caption: "Porto", value: 3 }, { id: "6", caption: "Porto", value: 2 }])
         });
         const portos = Array.from(container.querySelectorAll(".tag-cloud-tag")).filter(
             el => el.textContent === "Porto"
         );
-        expect(portos).toHaveLength(2);
-        fireEvent.click(portos[1]);
-        expect(onClickAction.execute).toHaveBeenCalledWith({ eventTagKey: "Porto#2" });
+        expect(portos).toHaveLength(3);
+        portos.forEach(el => fireEvent.click(el));
+        expect(onClickAction.execute.mock.calls.map(([args]) => args.eventTagKey)).toEqual(["Porto", "Porto", "Porto"]);
+    });
+
+    it("uses the enumeration key, not the translated caption, as the fallback key", () => {
+        const onClickAction = action();
+        const enumCaption = {
+            get: item => ({ value: item.status, displayValue: item.status === "in_progress" ? "Em curso" : "Feito" })
+        };
+        const { container } = renderCloud({
+            onClickAction,
+            caption: enumCaption,
+            tagList: list([
+                { id: "1", status: "in_progress", value: 4 },
+                { id: "2", status: "done", value: 2 }
+            ])
+        });
+        fireEvent.click(tag(container, "Em curso"));
+        expect(onClickAction.execute).toHaveBeenCalledWith({ eventTagKey: "in_progress" });
+    });
+
+    it("retries mouse move while the action is busy and runs a skipped mouse out later", () => {
+        const onMouseMoveAction = { ...action(), isExecuting: true };
+        const onMouseOutAction = { ...action(), isExecuting: true };
+        const { container, rerenderCloud } = renderCloud({ onMouseMoveAction, onMouseOutAction });
+        const porto = tag(container, "Porto");
+        fireEvent.mouseMove(porto);
+        expect(onMouseMoveAction.execute).not.toHaveBeenCalled();
+        const idleMove = { ...onMouseMoveAction, isExecuting: false };
+        rerenderCloud({ onMouseMoveAction: idleMove, onMouseOutAction });
+        fireEvent.mouseMove(tag(container, "Porto"));
+        expect(idleMove.execute).toHaveBeenCalledWith({ eventTagKey: "Porto" });
+
+        fireEvent.mouseOut(tag(container, "Porto"));
+        expect(onMouseOutAction.execute).not.toHaveBeenCalled();
+        const idleOut = { ...onMouseOutAction, isExecuting: false };
+        rerenderCloud({ onMouseMoveAction: idleMove, onMouseOutAction: idleOut });
+        expect(idleOut.execute).toHaveBeenCalledWith({ eventTagKey: "Porto" });
     });
 
     it("adds tooltip, per-tag class and pill style", () => {
