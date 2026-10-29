@@ -14,7 +14,7 @@
         Simple and extensible tag/word cloud React component based on https://www.npmjs.com/package/react-tagcloud
     </description>
     <studioProCategory>Data controls</studioProCategory>
-    <helpUrl>https://github.com/StoneworxNL/tag-cloud-mendix</helpUrl>
+    <helpUrl>https://github.com/StoneworxNL/tag-cloud-mendix/blob/main/README.md</helpUrl>
     <properties>
         <propertyGroup caption="General">
             <propertyGroup caption="Data">
