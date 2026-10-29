@@ -127,7 +127,6 @@ export function Cloud({
                     role={clickable ? "button" : undefined}
                     tabIndex={clickable ? 0 : undefined}
                     aria-label={meta.tooltip ? `${tag.value}, ${meta.tooltip}` : undefined}
-                    onClick={clickable ? () => handleClick(tag.key) : undefined}
                     onKeyDown={
                         clickable
                             ? event => {
@@ -138,35 +137,42 @@ export function Cloud({
                               }
                             : undefined
                     }
-                    onDoubleClick={onDoubleClickAction ? () => run(onDoubleClickAction, tag.key) : undefined}
-                    onMouseMove={
-                        onMouseMoveAction
-                            ? () => {
-                                  if (hoveredKey.current !== tag.key) {
-                                      hoveredKey.current = tag.key;
-                                      run(onMouseMoveAction, tag.key);
-                                  }
-                              }
-                            : undefined
-                    }
-                    onMouseOut={() => {
-                        hoveredKey.current = null;
-                        run(onMouseOutAction, tag.key);
-                    }}
                 >
                     {tag.value}
                 </span>
             );
         },
-        [renderMode, clickable, handleClick, run, onDoubleClickAction, onMouseMoveAction, onMouseOutAction]
+        [renderMode, clickable, handleClick]
     );
+
+    // Mouse handlers must be given to the cloud, not set on the rendered tag: react-tagcloud 2.3.3 crashes
+    // (`origHandlers is not a function`) when a rendered tag has its own onClick/onMouseMove/... handler.
+    const onClick = clickable ? tag => handleClick(tag.key) : undefined;
+    const onDoubleClick = onDoubleClickAction ? tag => run(onDoubleClickAction, tag.key) : undefined;
+    const onMouseMove = onMouseMoveAction
+        ? tag => {
+              if (hoveredKey.current !== tag.key) {
+                  hoveredKey.current = tag.key;
+                  run(onMouseMoveAction, tag.key);
+              }
+          }
+        : undefined;
+    const onMouseOut =
+        onMouseMoveAction || onMouseOutAction
+            ? tag => {
+                  hoveredKey.current = null;
+                  run(onMouseOutAction, tag.key);
+              }
+            : undefined;
 
     const rootClassName = classNames("widget-tag-cloud", className, {
         "widget-tag-cloud--pill": renderMode === "pill"
     });
 
     if (tagList.status === "loading" && data.length === 0) {
-        return <div className={classNames(rootClassName, "widget-tag-cloud--loading")} style={style} aria-busy="true" />;
+        return (
+            <div className={classNames(rootClassName, "widget-tag-cloud--loading")} style={style} aria-busy="true" />
+        );
     }
 
     if (data.length === 0) {
@@ -189,6 +195,10 @@ export function Cloud({
             randomSeed={randomSeed || undefined}
             colorOptions={colorOptions}
             renderer={renderer}
+            onClick={onClick}
+            onDoubleClick={onDoubleClick}
+            onMouseMove={onMouseMove}
+            onMouseOut={onMouseOut}
         />
     );
 }

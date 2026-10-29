@@ -80,7 +80,9 @@ export function getPreview(values, isDarkMode) {
                         {
                             type: "Text",
                             content: word,
-                            fontSize: Math.round(min + ((max - min) * ((index * 5) % SAMPLE_WORDS.length)) / (SAMPLE_WORDS.length - 1)),
+                            fontSize: Math.round(
+                                min + ((max - min) * ((index * 5) % SAMPLE_WORDS.length)) / (SAMPLE_WORDS.length - 1)
+                            ),
                             fontColor: values.disableRandomColor ? undefined : palette[index % palette.length]
                         }
                     ]
