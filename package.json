@@ -1,7 +1,7 @@
 {
   "name": "tagcloud",
   "widgetName": "TagCloud",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Simple and extensible tag/word cloud React component based on https://www.npmjs.com/package/react-tagcloud",
   "copyright": "JL 2025",
   "author": "JL",
