@@ -5,7 +5,7 @@
 A tag/word cloud for Mendix, based on [react-tagcloud](https://www.npmjs.com/package/react-tagcloud). Each tag's font
 size follows its value, colors come from your data or a seeded generator, and tags can run actions.
 
-![Demo](images/home.png)
+![Tag Cloud demo app](images/demo-home.png)
 
 ## Requirements
 
@@ -53,6 +53,27 @@ size follows its value, colors come from your data or a seeded generator, and ta
 The widget's Class and Style properties apply to the whole cloud. Tags have the class `tag-cloud-tag` (and
 `tag-cloud-tag--pill` for pills); the cloud has `widget-tag-cloud`.
 
+<details>
+<summary>Screenshots: data and size, colors, order and seeds, styling</summary>
+
+**Data & size**: size ranges, an XPath-filtered list and the empty message.
+
+![Data and size examples](images/demo-data-size.png)
+
+**Colors**: color attribute, luminosity, hue, custom hue and random colors off.
+
+![Color examples](images/demo-colors.png)
+
+**Order & seeds**: sorted by value or name, shuffled with and without a seed.
+
+![Order and seed examples](images/demo-order.png)
+
+**Styling**: text and pills, tooltips, Tag Class and a Studio Pro class.
+
+![Styling examples](images/demo-styling.png)
+
+</details>
+
 ## Events
 
 All tag key actions receive `$eventTagKey`: the Tag Key, or the caption's value when no key is set.
@@ -68,14 +89,14 @@ All tag key actions receive `$eventTagKey`: the Tag Key, or the caption's value 
 Use nanoflows for On Mouse Move and On Mouse Out: a microflow is a server round trip each time. Because a double click
 also fires two clicks, don't wire On Click and On Double Click to microflows that both change data.
 
+![Events demo with the event log](images/demo-events.png)
+
 ## Demo project
 
 -   [Mendix app running on the cloud](https://tagcloud-sandbox.mxapps.io/index.html?profile=Responsive)
 -   [Mendix demo module (.mpk)](demo/CloudTag.mpk)
 
 Please be mindful when changing the data in the online demo, so it keeps working for everyone.
-
-![Demo](images/homegif.gif)
 
 ## Development
 
