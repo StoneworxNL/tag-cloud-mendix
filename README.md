@@ -93,8 +93,8 @@ also fires two clicks, don't wire On Click and On Double Click to microflows tha
 
 ## Demo project
 
--   [Mendix app running on the cloud](https://tagcloud-sandbox.mxapps.io/index.html?profile=Responsive)
--   [Mendix demo module (.mpk)](demo/CloudTag.mpk)
+[Mendix app running on the cloud](https://tagcloud-sandbox.mxapps.io/index.html?profile=Responsive). The demo app is
+released separately from the widget.
 
 Please be mindful when changing the data in the online demo, so it keeps working for everyone.
 
