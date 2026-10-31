@@ -2,7 +2,7 @@
 <widget
     id="stoneworx.tagcloud.TagCloud"
     pluginWidget="true"
-    needsEntityContext="true"
+    needsEntityContext="false"
     offlineCapable="true"
     supportedPlatform="Web"
     xmlns="http://www.mendix.com/widget/1.0/"
@@ -13,90 +13,175 @@
     <description>
         Simple and extensible tag/word cloud React component based on https://www.npmjs.com/package/react-tagcloud
     </description>
-    <icon />
+    <studioProCategory>Data controls</studioProCategory>
+    <helpUrl>https://github.com/StoneworxNL/tag-cloud-mendix/blob/main/README.md</helpUrl>
     <properties>
         <propertyGroup caption="General">
-            <property key="tagList" type="datasource" isList="true">
-                <caption>Tag List</caption>
-                <description>Data source providing Tag objects</description>
-            </property>
-            <property key="uniqueId" type="attribute" dataSource="tagList" required="false">
-                <caption>Tag Key (Unique)</caption>
-                <description>If it is not provided, value property will be used instead.</description>
-                <attributeTypes>
-                    <attributeType name="String" />
-                </attributeTypes>
-            </property>
-            <property key="caption" type="attribute" dataSource="tagList">
-                <caption>Caption</caption>
-                <description>Caption</description>
-                <attributeTypes>
-                    <attributeType name="String" />
-                </attributeTypes>
-            </property>
-            <property key="value" type="attribute" dataSource="tagList">
-                <caption>Value</caption>
-                <description>Value</description>
-                <attributeTypes>
-                    <attributeType name="Integer" />
-                    <attributeType name="Decimal" />
-                    <attributeType name="Long" />
-                </attributeTypes>
-            </property>
-            <property key="color" type="attribute" dataSource="tagList" required="false">
-                <caption>Color</caption>
-                <description>Color of the tag. If not provided, random color will be used instead.</description>
-                <attributeTypes>
-                    <attributeType name="String" />
-                </attributeTypes>
-            </property>
-            <!-- Action property -->
-
-            <!-- Size property -->
-            <property key="minSize" type="integer" defaultValue="12">
-                <caption>Minimum Size</caption>
-                <description>Minimal font size (in px) used in cloud.</description>
-            </property>
-            <property key="maxSize" type="integer" defaultValue="35">
-                <caption>Maximum Size</caption>
-                <description>Maximal font size (in px) used in cloud.</description>
-            </property>
-            <!-- (...) -->
-            <property key="shuffle" type="boolean" defaultValue="true">
-                <caption>Shuffle</caption>
-                <description>If true, tags are shuffled. When tags are modified, cloud is re-shuffled.</description>
-            </property>
-            <property key="disableRandomColor" type="boolean" defaultValue="false">
-                <caption>Disable Random Color</caption>
-                <description>If true, random color is not used.</description>
-            </property>
-            <property key="randomSeed" type="integer" defaultValue="0">
-                <caption>Random Seed</caption>
-                <description>Random seed used to shuffle tags and generate color.</description>
-            </property>
+            <propertyGroup caption="Data">
+                <property key="tagList" type="datasource" isList="true">
+                    <caption>Tag List</caption>
+                    <description>Data source providing Tag objects</description>
+                </property>
+                <property key="uniqueId" type="attribute" dataSource="tagList" required="false">
+                    <caption>Tag Key (Unique)</caption>
+                    <description>If it is not provided, the caption will be used instead.</description>
+                    <attributeTypes>
+                        <attributeType name="String" />
+                        <attributeType name="Integer" />
+                        <attributeType name="Long" />
+                        <attributeType name="AutoNumber" />
+                        <attributeType name="Enum" />
+                    </attributeTypes>
+                </property>
+                <property key="caption" type="attribute" dataSource="tagList">
+                    <caption>Caption</caption>
+                    <description>Text shown for the tag.</description>
+                    <attributeTypes>
+                        <attributeType name="String" />
+                        <attributeType name="Enum" />
+                    </attributeTypes>
+                </property>
+                <property key="value" type="attribute" dataSource="tagList">
+                    <caption>Value</caption>
+                    <description>Weight of the tag. Higher values render with a bigger font. Empty values count as 0.</description>
+                    <attributeTypes>
+                        <attributeType name="Integer" />
+                        <attributeType name="Decimal" />
+                        <attributeType name="Long" />
+                    </attributeTypes>
+                </property>
+                <property key="color" type="attribute" dataSource="tagList" required="false">
+                    <caption>Color</caption>
+                    <description>Any CSS color (e.g. #1D3557, rgb(...), teal). If empty, a random color is used unless random colors are disabled.</description>
+                    <attributeTypes>
+                        <attributeType name="String" />
+                    </attributeTypes>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Size">
+                <property key="minSize" type="integer" defaultValue="12">
+                    <caption>Minimum Size</caption>
+                    <description>Font size (in px) of the tag with the lowest value.</description>
+                </property>
+                <property key="maxSize" type="integer" defaultValue="35">
+                    <caption>Maximum Size</caption>
+                    <description>Font size (in px) of the tag with the highest value.</description>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Order">
+                <property key="shuffle" type="boolean" defaultValue="true">
+                    <caption>Shuffle</caption>
+                    <description>If true, tags are shuffled. When tags are modified, the cloud is re-shuffled.</description>
+                </property>
+                <property key="randomSeed" type="integer" defaultValue="0">
+                    <caption>Random Seed</caption>
+                    <description>Seed for shuffling and random colors, so the cloud looks the same on every load. 0 means no seed (a different result each time).</description>
+                </property>
+            </propertyGroup>
+        </propertyGroup>
+        <propertyGroup caption="Appearance">
+            <propertyGroup caption="Tags">
+                <property key="renderMode" type="enumeration" defaultValue="text">
+                    <caption>Tag Style</caption>
+                    <description>Text renders plain coloured words. Pill renders each tag as a chip with the tag color as background.</description>
+                    <enumerationValues>
+                        <enumerationValue key="text">Text</enumerationValue>
+                        <enumerationValue key="pill">Pill</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="tooltip" type="textTemplate" dataSource="tagList" required="false">
+                    <caption>Tooltip</caption>
+                    <description>Text shown when hovering a tag, e.g. "{1}: {2} mentions".</description>
+                </property>
+                <property key="tagClass" type="expression" dataSource="tagList" required="false">
+                    <caption>Tag Class</caption>
+                    <description>Extra CSS class(es) per tag, e.g. if $currentObject/Value > 100 then 'tag-hot' else ''.</description>
+                    <returnType type="String" />
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Random Colors">
+                <property key="disableRandomColor" type="boolean" defaultValue="false">
+                    <caption>Disable Random Color</caption>
+                    <description>If true, tags without a color use the inherited text color.</description>
+                </property>
+                <property key="colorLuminosity" type="enumeration" defaultValue="any">
+                    <caption>Luminosity</caption>
+                    <description>Brightness of the generated colors.</description>
+                    <enumerationValues>
+                        <enumerationValue key="any">Any</enumerationValue>
+                        <enumerationValue key="bright">Bright</enumerationValue>
+                        <enumerationValue key="light">Light</enumerationValue>
+                        <enumerationValue key="dark">Dark</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="colorHue" type="enumeration" defaultValue="any">
+                    <caption>Hue</caption>
+                    <description>Color family of the generated colors.</description>
+                    <enumerationValues>
+                        <enumerationValue key="any">Any</enumerationValue>
+                        <enumerationValue key="red">Red</enumerationValue>
+                        <enumerationValue key="orange">Orange</enumerationValue>
+                        <enumerationValue key="yellow">Yellow</enumerationValue>
+                        <enumerationValue key="green">Green</enumerationValue>
+                        <enumerationValue key="blue">Blue</enumerationValue>
+                        <enumerationValue key="purple">Purple</enumerationValue>
+                        <enumerationValue key="pink">Pink</enumerationValue>
+                        <enumerationValue key="monochrome">Monochrome</enumerationValue>
+                        <enumerationValue key="custom">Custom</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="customHue" type="string" required="false">
+                    <caption>Custom Hue</caption>
+                    <description>Hex color the generated colors are based on, e.g. #E4572E.</description>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Messages">
+                <property key="emptyMessage" type="textTemplate" required="false">
+                    <caption>Empty Message</caption>
+                    <description>Shown when the data source has no tags.</description>
+                    <translations>
+                        <translation lang="en_US">No tags available.</translation>
+                    </translations>
+                </property>
+            </propertyGroup>
         </propertyGroup>
         <propertyGroup caption="Events">
-            <property key="onClickAction" type="action">
-                <caption>On Click</caption>
-                <description>Action to be executed when a tag is clicked.</description>
-                <actionVariables>
-                    <actionVariable key="eventTagKey" type="String" caption="Tag Key" />
-                </actionVariables>
-            </property>
-            <property key="onDoubleClickAction" type="action">
-                <caption>On Double Click</caption>
-                <description>Action to be executed when a tag is double-clicked.</description>
-                <actionVariables>
-                    <actionVariable key="eventTagKey" type="String" caption="Tag Key" />
-                </actionVariables>
-            </property>
-            <property key="onMouseMoveAction" type="action">
-                <caption>On Mouse Move</caption>
-                <description>Action to be executed when mouse is moved over a tag.</description>
-                <actionVariables>
-                    <actionVariable key="eventTagKey" type="String" caption="Tag Key" />
-                </actionVariables>
-            </property>
+            <propertyGroup caption="Tag Key Actions">
+                <property key="onClickAction" type="action" required="false">
+                    <caption>On Click</caption>
+                    <description>Action to be executed when a tag is clicked (or activated with Enter/Space).</description>
+                    <actionVariables>
+                        <actionVariable key="eventTagKey" type="String" caption="Tag Key" />
+                    </actionVariables>
+                </property>
+                <property key="onDoubleClickAction" type="action" required="false">
+                    <caption>On Double Click</caption>
+                    <description>Action to be executed when a tag is double-clicked. The browser also fires On Click twice first.</description>
+                    <actionVariables>
+                        <actionVariable key="eventTagKey" type="String" caption="Tag Key" />
+                    </actionVariables>
+                </property>
+                <property key="onMouseMoveAction" type="action" required="false">
+                    <caption>On Mouse Move</caption>
+                    <description>Action to be executed when the mouse moves onto a tag. Runs once per tag entered (like a mouse enter), not on every pixel. Use a nanoflow: a microflow is a server round trip each time.</description>
+                    <actionVariables>
+                        <actionVariable key="eventTagKey" type="String" caption="Tag Key" />
+                    </actionVariables>
+                </property>
+                <property key="onMouseOutAction" type="action" required="false">
+                    <caption>On Mouse Out</caption>
+                    <description>Action to be executed when the mouse leaves a tag. Use a nanoflow: a microflow is a server round trip each time.</description>
+                    <actionVariables>
+                        <actionVariable key="eventTagKey" type="String" caption="Tag Key" />
+                    </actionVariables>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Object Actions">
+                <property key="onClickItemAction" type="action" dataSource="tagList" required="false">
+                    <caption>On Click (object)</caption>
+                    <description>Action that receives the clicked tag object itself. Runs in addition to On Click.</description>
+                </property>
+            </propertyGroup>
         </propertyGroup>
     </properties>
 </widget>

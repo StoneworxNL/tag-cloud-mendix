@@ -1,100 +1,103 @@
 /**
- * @typedef Property
- * @type {object}
- * @property {string} key
- * @property {string} caption
- * @property {string} description
- * @property {string[]} objectHeaders
- * @property {ObjectProperties[]} objects
- * @property {Properties[]} properties
- */
-
-/**
- * @typedef ObjectProperties
- * @type {object}
- * @property {PropertyGroup[]} properties
- * @property {string[]} captions
- */
-
-/**
- * @typedef PropertyGroup
- * @type {object}
- * @property {string} caption
- * @property {PropertyGroup[]} propertyGroups
- * @property {Property[]} properties
- */
-
-/**
- * @typedef Properties
- * @type {PropertyGroup}
- */
-
-/**
  * @typedef Problem
  * @type {object}
  * @property {string} property
  * @property {("error" | "warning" | "deprecation")} severity
  * @property {string} message
- * @property {string} studioMessage
- * @property {string} url
- * @property {string} studioUrl
  */
+
+const SAMPLE_WORDS = ["Mendix", "Tag", "Cloud", "Low-code", "React", "Widget", "Data", "Words"];
+
+function hideProperties(groups, keys) {
+    groups.forEach(group => {
+        if (group.properties) {
+            group.properties = group.properties.filter(property => !keys.includes(property.key));
+        }
+        if (group.propertyGroups) {
+            hideProperties(group.propertyGroups, keys);
+        }
+    });
+}
 
 /**
  * @param {object} values
- * @param {Properties} defaultProperties
- * @param {("web"|"desktop")} target
- * @returns {Properties}
+ * @param {object[]} defaultProperties
+ * @returns {object[]}
  */
-export function getProperties(values, defaultProperties, target) {
-    // Do the values manipulation here to control the visibility of properties in Studio and Studio Pro conditionally.
-    /* Example
-    if (values.myProperty === "custom") {
-        delete defaultProperties.properties.myOtherProperty;
+export function getProperties(values, defaultProperties) {
+    const hidden = [];
+    if (values.disableRandomColor) {
+        hidden.push("colorLuminosity", "colorHue", "customHue");
+    } else if (values.colorHue !== "custom") {
+        hidden.push("customHue");
     }
-    */
+    hideProperties(defaultProperties, hidden);
     return defaultProperties;
 }
 
-// /**
-//  * @param {Object} values
-//  * @returns {Problem[]} returns a list of problems.
-//  */
-// export function check(values) {
-//    /** @type {Problem[]} */
-//    const errors = [];
-//    // Add errors to the above array to throw errors in Studio and Studio Pro.
-//    /* Example
-//    if (values.myProperty !== "custom") {
-//        errors.push({
-//            property: `myProperty`,
-//            message: `The value of 'myProperty' is different of 'custom'.`,
-//            url: "https://github.com/myrepo/mywidget"
-//        });
-//    }
-//    */
-//    return errors;
-// }
+/**
+ * @param {object} values
+ * @returns {Problem[]}
+ */
+export function check(values) {
+    const errors = [];
+    if (values.minSize <= 0) {
+        errors.push({ property: "minSize", message: "Minimum Size must be greater than 0." });
+    }
+    if (values.maxSize < values.minSize) {
+        errors.push({ property: "maxSize", message: "Maximum Size must be greater than or equal to Minimum Size." });
+    }
+    // The color options are hidden when random colors are off, so they can't be wrong then.
+    if (!values.disableRandomColor) {
+        if (values.colorHue === "custom" && !/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(values.customHue || "")) {
+            errors.push({ property: "customHue", message: "Custom Hue must be a hex color such as #E4572E." });
+        }
+        if (values.renderMode === "pill" && values.colorLuminosity !== "dark") {
+            errors.push({
+                property: "colorLuminosity",
+                severity: "warning",
+                message: "Pills have white text. Set Luminosity to Dark so random colors keep enough contrast."
+            });
+        }
+    }
+    return errors;
+}
 
-// /**
-//  * @param {object} values
-//  * @param {boolean} isDarkMode
-//  * @param {number[]} version
-//  * @returns {object}
-//  */
-// export function getPreview(values, isDarkMode, version) {
-//     // Customize your pluggable widget appearance for Studio Pro.
-//     return {
-//         type: "Container",
-//         children: []
-//     };
-// }
-
-// /**
-//  * @param {Object} values
-//  * @param {("web"|"desktop")} platform
-//  * @returns {string}
-//  */
-// export function getCustomCaption(values, platform) {
-//     return "TagCloud";
-// }
+/**
+ * @param {object} values
+ * @param {boolean} isDarkMode
+ * @returns {object}
+ */
+export function getPreview(values, isDarkMode) {
+    const min = values.minSize > 0 ? values.minSize : 12;
+    const max = values.maxSize >= min ? values.maxSize : min;
+    const palette = isDarkMode
+        ? ["#8FB8DE", "#F4A261", "#E9C46A", "#90BE6D", "#CDB4DB"]
+        : ["#1D3557", "#E4572E", "#2A9D8F", "#6A4C93", "#F4A261"];
+    return {
+        type: "Container",
+        borders: true,
+        borderRadius: 4,
+        padding: 8,
+        children: [
+            {
+                type: "RowLayout",
+                columnSize: "fixed",
+                children: SAMPLE_WORDS.map((word, index) => ({
+                    type: "Container",
+                    padding: 4,
+                    children: [
+                        {
+                            type: "Text",
+                            content: word,
+                            fontSize: Math.round(
+                                min + ((max - min) * ((index * 5) % SAMPLE_WORDS.length)) / (SAMPLE_WORDS.length - 1)
+                            ),
+                            fontColor: values.disableRandomColor ? undefined : palette[index % palette.length]
+                        }
+                    ]
+                }))
+            }
+        ]
+    };
+}

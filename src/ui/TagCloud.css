@@ -1,6 +1,48 @@
-/*
-Place your custom CSS here
-*/
-.widget-hello-world {
+.widget-tag-cloud {
+    line-height: 1.4;
+    text-align: center;
+}
 
+.widget-tag-cloud .tag-cloud-tag {
+    display: inline-block;
+    margin: 0 3px;
+    vertical-align: middle;
+}
+
+.widget-tag-cloud .tag-cloud-tag--clickable {
+    cursor: pointer;
+}
+
+.widget-tag-cloud .tag-cloud-tag--clickable:hover {
+    text-decoration: underline;
+}
+
+.widget-tag-cloud .tag-cloud-tag:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.widget-tag-cloud .tag-cloud-tag--pill {
+    margin: 4px;
+    padding: 0.15em 0.7em;
+    border-radius: 999px;
+    color: #fff;
+    background-color: #6c757d;
+    line-height: 1.3;
+}
+
+.widget-tag-cloud .tag-cloud-tag--pill.tag-cloud-tag--clickable:hover {
+    text-decoration: none;
+    filter: brightness(0.92);
+}
+
+.widget-tag-cloud--empty {
+    padding: 16px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.widget-tag-cloud--loading {
+    min-height: 48px;
 }
